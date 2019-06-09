@@ -81,6 +81,7 @@ In [4]: %timeit cy_ext.pascal_row(1000)
 
 <br>
 <br>
+
 ### API
 <div style="display:flex">
 <div style="width: 50%">

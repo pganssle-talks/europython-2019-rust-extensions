@@ -34,6 +34,7 @@ pub unsafe extern "c" fn pascal_row(n: usize, size_out: *mut size_t) -> *mut u32
 ```
 
 <br>
+
 ```rust
 #[no_mangle]
 pub unsafe extern "c" fn deallocate_vec(ptr: *mut u32, len: size_t) {
