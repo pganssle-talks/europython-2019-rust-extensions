@@ -4,33 +4,32 @@ pub mod date_ex;
 pub mod classy;
 
 use pyo3::prelude::*;
-use pyo3::types::{PyList, PyBytes};
+use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 
-fn pascal_row_impl(n: usize) -> Vec<u32> {
-    let mut row : Vec<u32> = Vec::with_capacity(n);
-    row.resize(n, 0);       // Allocate an array of 0s
-    row[0] = 1;
+fn sieve_impl(n: usize) -> Vec<u32> {
+    let mut sieve: Vec<u32> = (2..((n + 1) as u32)).collect();
+    let lim : usize = ((n as f64).sqrt()) as usize;
 
-    let mut last : u32;
-    for i in 1..n {
-        let mut curr : u32 = 1;
-        for j in 1..(i + 1) {
-            last = curr;
-            curr = row[j];
-            row[j] = last + curr;
+    for i in 2usize..lim {
+        if sieve[i - 2] != 0 {
+            let mut j = i * i;
+            while j < n + 1 {
+                sieve[j - 2] = 0;
+                j += i;
+            }
         }
     }
 
-    row
+    sieve.into_iter().filter(|&x| x != 0).collect()
 }
 
 
 #[pyfunction]
-fn pascal_row(py: Python, n: usize) -> PyObject {
-    let list = PyList::new(py, &pascal_row_impl(n));
+fn sieve(py: Python, n: u32) -> &PyList {
+    let list = PyList::new(py, &sieve_impl(n as usize));
 
-    list.to_object(py)
+    list
 }
 
 #[pyfunction]
@@ -47,7 +46,7 @@ fn return_bytes(_py: Python) -> Vec<u8> {
 
 #[pymodule]
 fn backend(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_wrapped(wrap_pyfunction!(pascal_row))?;
+    m.add_wrapped(wrap_pyfunction!(sieve))?;
     m.add_wrapped(wrap_pyfunction!(print_bytes))?;
     m.add_wrapped(wrap_pyfunction!(return_bytes))?;
 
