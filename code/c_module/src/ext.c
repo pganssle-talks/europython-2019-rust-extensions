@@ -1,40 +1,48 @@
 #include <Python.h>
+#include <math.h>
 
-static PyObject* pascal_row(PyObject* self, PyObject* n_rows) {
+static PyObject* sieve_impl(PyObject* self, PyObject* max_n) {
     size_t n;
-    if ((n = PyLong_AsSize_t(n_rows)) == (size_t)-1 && PyErr_Occurred()) {
+    if ((n = PyLong_AsSize_t(max_n)) == (size_t)-1 && PyErr_Occurred()) {
         return NULL;
     }
 
-    int* row = calloc(n, sizeof(int));
-    if (row == NULL) {
+    // Populate the C array
+    int* sieve = malloc((n - 1) * sizeof(int));
+    if (sieve == NULL) {
         PyErr_NoMemory(); // raise MemoryError()
         return NULL;
     }
 
-    // Populate the C array containing the Pascal's triangle row
-    row[0] = 1;
-    int curr = 0, last = 0;
-    for (size_t i = 2; i <= n; ++i) {
-        curr = row[0];
+    for (size_t i = 2; i < n + 1; ++i) { sieve[i - 2] = (int)i; }
 
-        for (size_t j = 1; j <= i; ++j) {
-            last = curr;
-            curr = row[j];
-            row[j] = last + curr;
+    // Sieve out composite numbers
+    size_t lim = (size_t)sqrt((double)n);
+    for (size_t i = 2; i < lim; ++i) {
+        if (sieve[i - 2] != 0) {
+            for (size_t j = (i * i); j < (n + 1); j += i) {
+                sieve[j - 2] = 0;
+            }
         }
     }
 
     // Convert to Python list
-    PyObject* rv = PyList_New(n);
-    if (rv == NULL) {
-        goto cleanup;
+    size_t num_primes = 0;
+    for (size_t i = 0; i < n - 1; ++i) {
+        if (sieve[i]) { num_primes++; }
     }
 
+    PyObject* rv = PyList_New(num_primes);
+    if (rv == NULL) { goto cleanup; }
+
     PyObject * obj = NULL;
+    size_t j = 0;
     for (size_t i = 0; i < n; ++i) {
-        if ((obj = PyLong_FromLong(row[i])) == NULL || // int -> Py int
-                PyList_SetItem(rv, i, obj)) {          // rv[i] = obj
+        if (!sieve[i]) {
+            continue;
+        }
+        if ((obj = PyLong_FromLong(sieve[i])) == NULL || // int -> Py int
+                   PyList_SetItem(rv, j++, obj)) {       // rv[i] = obj
             Py_DECREF(rv);          // On error, remove list
             rv = NULL;
             goto cleanup;
@@ -42,12 +50,12 @@ static PyObject* pascal_row(PyObject* self, PyObject* n_rows) {
     }
 
 cleanup:
-    free(row);
+    free(sieve);
     return rv;
 }
 
 static PyMethodDef methods[] = {
-    { "pascal_row", pascal_row, METH_O, "Get the nth row of Pascal's triangle" },
+    { "sieve", sieve_impl, METH_O, "Calculate all primes below n" },
     {NULL, NULL, 0, NULL}
 };
 
