@@ -1,0 +1,6 @@
+###
+# Project-specific config file
+#
+# Note that this will be included *after* config/*.yml
+
+title: Build your Python Extensions with Rust!

@@ -1,0 +1,9 @@
+exclude:
+  - '.git'
+  - 'docs'
+  - 'jekyll-revealjs'
+  - 'config'
+destination: 'docs'
+markdown: redcarpet
+highlighter: rouge
+markdown_ext: ignoreme

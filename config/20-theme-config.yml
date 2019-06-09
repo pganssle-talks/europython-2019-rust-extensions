@@ -1,0 +1,18 @@
+###
+# Configuration file for the reveal.js theme
+
+reveal_path: reveal.js/
+reveal_theme: white.css
+reveal_transition: linear
+reveal_theme_path: reveal.js/css/theme/
+
+# Additional reveal.js options
+reveal_options:
+  width: 95%
+  height: 95%
+
+# Custom additional CSS
+extra_css:
+  css/custom.css
+
+highlight_style_sheet: "css/xt256-pg.css"
