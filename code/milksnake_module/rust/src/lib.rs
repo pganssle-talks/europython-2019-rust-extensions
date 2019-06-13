@@ -3,27 +3,26 @@ use std::os::raw::c_ulonglong;
 
 type size_t = c_ulonglong;
 
-fn pascal_row_impl(n: usize) -> Vec<u32> {
-    let mut row: Vec<u32> = Vec::with_capacity(n);
-    row.resize(n, 0); // allocate an array of 0s
-    row[0] = 1;
+fn sieve_impl(n: usize) -> Vec<u32> {
+    let mut sieve: Vec<u32> = (2..((n + 1) as u32)).collect();
+    let lim : usize = ((n as f64).sqrt()) as usize;
 
-    let mut last: u32;
-    for i in 1..n {
-        let mut curr: u32 = 1;
-        for j in 1..(i + 1) {
-            last = curr;
-            curr = row[j];
-            row[j] = last + curr;
+    for i in 2usize..lim {
+        if sieve[i - 2] != 0 {
+            let mut j = i * i;
+            while j < n + 1 {
+                sieve[j - 2] = 0;
+                j += i;
+            }
         }
     }
 
-    row
+    sieve.into_iter().filter(|&x| x != 0).collect()
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn pascal_row(n: usize, size_out: *mut size_t) -> *mut u32 {
-    let mut s = pascal_row_impl(n);
+pub unsafe extern "C" fn sieve(n: usize, size_out: *mut size_t) -> *mut u32 {
+    let mut s = sieve_impl(n);
     *size_out = s.len() as size_t;
     let rv = s.as_mut_ptr();
     mem::forget(s); // prevent rust from de-allocating this

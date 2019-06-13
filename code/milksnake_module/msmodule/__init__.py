@@ -1,10 +1,10 @@
 from msmodule._native import ffi, lib
 
-def pascal_row(n):
+def sieve(n):
     l = ffi.new("size_t *")
 
     # Get a C array of length l
-    arr = lib.pascal_row(n, l)
+    arr = lib.sieve(n, l)
     size = l[0]
 
     try:
@@ -13,8 +13,4 @@ def pascal_row(n):
         lib.deallocate_vec(arr, size)
 
     return out
-
-
-
-
 
