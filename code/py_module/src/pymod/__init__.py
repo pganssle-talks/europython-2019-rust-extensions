@@ -1,13 +1,11 @@
-def pascal_row(n):
-    row = [0] * n
-    row[0] = 1
+import math
 
-    for i in range(1, n):
-        curr = 1
-        for j in range(1, i + 1):
-            last = curr
-            curr = row[j]
-            row[j] = last + curr
+def sieve(n):
+    numbers = list(range(2, n + 1))
 
-    return row
+    for i in range(2, int(math.sqrt(n))):
+        if numbers[i - 2] != 0:
+            for j in range(i * i, n + 1, i):
+                numbers[j - 2] = 0
 
+    return [x for x in numbers if x != 0]
