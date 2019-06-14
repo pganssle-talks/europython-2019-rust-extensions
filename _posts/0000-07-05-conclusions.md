@@ -10,39 +10,44 @@
 # Cython for backends
 
 ```python
-from cpython cimport array
-import array
+# distutils: language = c++
+from libcpp.vector cimport vector
+import math
 
-cdef int[:] pascal_row_impl(unsigned int n):
-    cdef int[:] row = array.array('i', [0] * n)
-
-    cdef int last, curr
+cdef vector[int] sieve_impl(unsigned int n):
     cdef unsigned int i, j
+    cdef vector[int] sieve = range(2, n + 1)
 
-    row[0] = 1
+    cdef int lim = int(math.sqrt(n)) + 1
+    for i in range(2, lim):
+        if sieve[i - 2] != 0:
+            j = i * i
+            while j < n + 1:
+                sieve[j - 2] = 0
+                j += i
 
-    for i in range(1, n):
-        curr = 1
-        for j in range(1, i + 1):
-            last = curr
-            curr = row[j]
-            row[j] = last + curr
+    return [x for x in sieve if x != 0]
 
-    return row
 
-cpdef list pascal_row(unsigned int n):
-    return list(pascal_row_impl(n))
+cpdef list sieve(unsigned int n):
+    return list(sieve_impl(n))
 ```
 <br/>
 
 ```python
-In [1]: from cmod import ext as cext
-In [2]: from cymodule import backend as cy_ext
-In [3]: %timeit cext.pascal_row(1000)
-230 µs ± 4.88 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 
-In [4]: %timeit cy_ext.pascal_row(1000)
-445 µs ± 2.88 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+In [1]: from cmod import ext as cext
+In [2]: from cymodule import backend as cython_ext
+In [3]: import pymod
+
+In [4]: %timeit pymod.sieve(100000)
+23.9 ms ± 1.12 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+
+In [5]: %timeit cext.sieve(100000)
+866 µs ± 12 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+
+In [6]: %timeit cython_ext.sieve(100000)
+3.1 ms ± 114 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 ```
 
 --
