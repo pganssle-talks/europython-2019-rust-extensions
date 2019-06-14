@@ -3,9 +3,7 @@
 
 static PyObject* sieve_impl(PyObject* self, PyObject* max_n) {
     size_t n;
-    if ((n = PyLong_AsSize_t(max_n)) == (size_t)-1 && PyErr_Occurred()) {
-        return NULL;
-    }
+    if ((n = PyLong_AsSize_t(max_n)) == (size_t)-1 && PyErr_Occurred()) { return NULL; }
 
     // Populate the C array
     int* sieve = malloc((n - 1) * sizeof(int));
@@ -27,28 +25,21 @@ static PyObject* sieve_impl(PyObject* self, PyObject* max_n) {
     }
 
     // Convert to Python list
-    size_t num_primes = 0;
-    for (size_t i = 0; i < n - 1; ++i) {
-        if (sieve[i]) { num_primes++; }
-    }
+    size_t num_primes = 0;  // Calculate total size of list
+    for (size_t i = 0; i < n - 1; ++i) { if (sieve[i]) { num_primes++; } }
 
     PyObject* rv = PyList_New(num_primes);
     if (rv == NULL) { goto cleanup; }
-
     PyObject * obj = NULL;
     size_t j = 0;
     for (size_t i = 0; i < n - 1; ++i) {
-        if (!sieve[i]) {
-            continue;
-        }
+        if (!sieve[i]) { continue; }
         if ((obj = PyLong_FromLong(sieve[i])) == NULL || // int -> Py int
                    PyList_SetItem(rv, j++, obj)) {       // rv[i] = obj
-            Py_DECREF(rv);          // On error, remove list
-            rv = NULL;
+            Py_DECREF(rv);  rv = NULL;                   // On error, remove list
             goto cleanup;
         }
     }
-
 cleanup:
     free(sieve);
     return rv;
