@@ -7,7 +7,7 @@ cdef int[:] sieve_impl(unsigned int n):
     cdef unsigned int i, j
     cdef int[:] sieve = array.array('i', [0] * (n - 1))
 
-    cdef int lim = int(math.sqrt(n))
+    cdef int lim = int(math.sqrt(n)) + 1
     for i in range(2, n + 1):
         sieve[i - 2] = i
 

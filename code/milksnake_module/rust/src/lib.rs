@@ -5,7 +5,7 @@ type size_t = c_ulonglong;
 
 fn sieve_impl(n: usize) -> Vec<u32> {
     let mut sieve: Vec<u32> = (2..((n + 1) as u32)).collect();
-    let lim : usize = ((n as f64).sqrt()) as usize;
+    let lim : usize = ((n as f64).sqrt() + 1.0) as usize;
 
     for i in 2usize..lim {
         if sieve[i - 2] != 0 {

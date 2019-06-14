@@ -15,7 +15,7 @@ static PyObject* sieve_impl(PyObject* self, PyObject* max_n) {
     for (size_t i = 2; i < n + 1; ++i) { sieve[i - 2] = (int)i; }
 
     // Sieve out composite numbers
-    size_t lim = (size_t)sqrt((double)n);
+    size_t lim = (size_t)sqrt((double)n) + 1;
     for (size_t i = 2; i < lim; ++i) {
         if (sieve[i - 2] != 0) {
             for (size_t j = (i * i); j < (n + 1); j += i) {
