@@ -1,4 +1,4 @@
-# Pascal's Triangle: Python Version
+# Sieve of Eratosthenes: Python Version
 
 ```python
 import math
