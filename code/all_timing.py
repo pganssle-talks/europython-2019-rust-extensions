@@ -61,9 +61,9 @@ n_vals = [1, 100, 1000, 100000, 1000000]
 backends = {
     'Python': 'py_sieve',
     'Cython': 'cy_sieve',
-    'C': 'c_sieve',
     'Milksnake': 'ms_sieve',
     'PyO3': 'pyo3_sieve',
+    'C': 'c_sieve',
 }
 
 table = []
