@@ -61,6 +61,70 @@ In [6]: %timeit cython_ext.sieve(100000)
 
 --
 
+# Speed
+
+<table>
+  <tr>
+    <th>n</th>
+    <th>Python</th>
+    <th>Cython</th>
+    <th>Milksnake</th>
+    <th>PyO3</th>
+    <th>C</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>1200 ns</td>
+    <td>439 ns</td>
+    <td>1700 ns</td>
+    <td>298 ns</td>
+    <td>68 ns</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td>12.7 μs</td>
+    <td>2.8 μs</td>
+    <td>3.7 μs</td>
+    <td>1.1 μs</td>
+    <td>0.51 μs</td>
+  </tr>
+  <tr>
+    <td>1000</td>
+    <td>156.8 μs</td>
+    <td>26.7 μs</td>
+    <td>15.4 μs</td>
+    <td>5.8 μs</td>
+    <td>6.1 μs</td>
+  </tr>
+  <tr>
+    <td>100000</td>
+    <td>23.0 ms</td>
+    <td>3.0 ms</td>
+    <td>1.2 ms</td>
+    <td>0.724 ms</td>
+    <td>0.745 ms</td>
+  </tr>
+  <tr>
+    <td>1000000</td>
+    <td>354.8 ms</td>
+    <td>33.0 ms</td>
+    <td>13.0 ms</td>
+    <td>7.8 ms</td>
+    <td>8.6 ms</td>
+  </tr>
+</table>
+
+<br/>
+<br/>
+
+## Caveats
+
+- Not necessarily a representative benchmark
+- Not particularly optimized
+
+
+--
+
 # FFI vs. API
 
 ### FFI
