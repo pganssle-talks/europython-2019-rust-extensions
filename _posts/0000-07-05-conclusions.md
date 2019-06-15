@@ -1,5 +1,3 @@
-# Parting Thoughts
-
 <img src="external-images/could-should.jpg"
      alt="You were so preoccupied with whether or not you could,
           you didn't stop to think if you shold"
