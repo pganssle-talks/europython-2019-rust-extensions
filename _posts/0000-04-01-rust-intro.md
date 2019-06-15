@@ -1,9 +1,7 @@
-<img src="external-images/logos/rust-logo-blk.svg"
-     alt="The logo for hte Rust language"
+<img src="external-images/logos/rust-logo-with-text.svg"
+     alt="The logo for the Rust language"
      style="height: 300px; max-height: 300px"
      />
-
-# Rust
 
 - Memory safety
 - Fearless concurrency
