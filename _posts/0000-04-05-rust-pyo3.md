@@ -152,11 +152,9 @@ pub unsafe fn PyDate_Check(op: *mut PyObject) -> c_int {
 # PyO3: How it works
 
 ## Safe Rust Layer
-
 ```rust
 impl PyDate {
-    pub fn new(py: Python,
-               year: i32, month: u8, day: u8) -> PyResult<Py<PyDate>> {
+    pub fn new<'p>(py: Python<'p>, year: i32, month: u8, day: u8) -> PyResult<&'p PyDate> {
         unsafe {
             let ptr = (PyDateTimeAPI.Date_FromDate)(
                 year,
@@ -164,9 +162,10 @@ impl PyDate {
                 c_int::from(day),
                 PyDateTimeAPI.DateType,
             );
-            Py::from_owned_ptr_or_err(py, ptr)
+            py.from_owned_ptr_or_err(ptr)
         }
     }
+
     ...
 }
 ```
