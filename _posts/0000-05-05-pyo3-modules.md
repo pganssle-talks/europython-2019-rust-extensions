@@ -8,7 +8,7 @@ use pyo3::wrap_pyfunction;
 use date_impl::to_timestamp;
 
 #[pyfunction]
-fn seconds_before(py: Python, d: &PyDate, seconds: i64) -> PyResult<Py<PyDate>> {
+fn seconds_before<'p>(py: Python<'p>, d: &PyDate, seconds: i64) -> PyResult<&'p PyDate> {
     let timestamp = to_timestamp(&d);
 
     PyDate::from_timestamp(py, timestamp - seconds)
