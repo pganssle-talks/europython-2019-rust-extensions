@@ -6,6 +6,18 @@
 - Memory safety
 - Fearless concurrency
 - High performance
+- Broad community and open source ecosystem
+
+
+Notes:
+
+This is where Rust comes in, because Rust is a modern systems programming
+language that attempts to build solutions to these and other problems deep
+into the structure of the language. It is a memory safe language that seeks
+to enable fearless concurrency without sacrificing performance. And one thing
+that I think is particularly appealing to those of us from the Python community
+is that it has a high-quality package manager and a huge ecosystem of open
+source packages.
 
 --
 
