@@ -1,0 +1,180 @@
+# Sieve of Eratosthenes: Python Version
+
+```python
+import math
+
+def sieve(n):
+    numbers = list(range(2, n + 1))
+
+    for i in range(2, int(math.sqrt(n))):
+        if numbers[i - 2] != 0:
+            for j in range(i * i, n + 1, i):
+                numbers[j - 2] = 0
+
+    return [x for x in numbers if x != 0]
+```
+<br/>
+<br/>
+
+## Output:
+
+```
+>>> sieve(5)
+[2, 3, 5]
+
+>>> sieve(20)
+[2, 3, 5, 7, 11, 13, 17, 19]
+ ```
+
+Notes:
+
+Here is a simple program for calculating all the prime numbers less than a given
+number, using the Sieve of Eratosthenes algorithm, which works by starting
+with an array of all possible numbers and then crossing out all multiples of
+the primes you find.
+
+--
+
+# C API
+
+```C
+static PyObject* sieve_impl(PyObject* self, PyObject* max_n) {
+    size_t n;
+    if ((n = PyLong_AsSize_t(max_n)) == (size_t)-1 && PyErr_Occurred()) { return NULL; }
+
+    // Populate the C array
+    int* sieve = malloc((n - 1) * sizeof(int));
+    if (sieve == NULL) {
+        PyErr_NoMemory(); // raise MemoryError()
+        return NULL;
+    }
+
+    for (size_t i = 2; i < n + 1; ++i) { sieve[i - 2] = (int)i; }
+
+    // Sieve out composite numbers
+    size_t lim = (size_t)sqrt((double)n);
+    for (size_t i = 2; i < lim; ++i) {
+        if (sieve[i - 2] != 0) {
+            for (size_t j = (i * i); j < (n + 1); j += i) {
+                sieve[j - 2] = 0;
+            }
+        }
+    }
+
+    // Convert to Python list
+    size_t num_primes = 0;  // Calculate total size of list
+    for (size_t i = 0; i < n - 1; ++i) { if (sieve[i]) { num_primes++; } }
+
+    PyObject* rv = PyList_New(num_primes);
+    if (rv == NULL) { goto cleanup; }
+    PyObject * obj = NULL;
+    size_t j = 0;
+    for (size_t i = 0; i < n - 1; ++i) {
+        if (!sieve[i]) { continue; }
+        if ((obj = PyLong_FromLong(sieve[i])) == NULL || // int -> Py int
+                   PyList_SetItem(rv, j++, obj)) {       // rv[i] = obj
+            Py_DECREF(rv);  rv = NULL;                   // On error, remove list
+            goto cleanup;
+        }
+    }
+cleanup:
+    free(sieve);
+    return rv;
+}
+```
+
+Notes:
+
+Here's the same program, written with the C API, obviously it's a lot more complicated,
+and if you look closely, you'll notice that I've had to use a terse programming style
+just to fit it all on one slide.
+
+But the number of lines of code is not as important as the fact that there are a lot
+of details in here that are hard to keep track of - memory, reference counts, error handling.
+
+So why do this, rather than just write the nice, simple Python program?
+
+--
+
+# C API: Performance benefits
+
+```
+In [1]: from cmod import ext
+In [2]: import pymod
+In [3]: %timeit ext.sieve(100000)
+526 µs ± 5.08 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+
+In [4]: %timeit pymod.sieve(100000)
+18.6 ms ± 454 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+In [5]: 18.6 / 0.526
+Out[5]: 35.361216730038024
+```
+
+<br/>
+<br/>
+<table>
+    <tr>
+        <td>N</td>
+        <td>Pure Python</td>
+        <td>C Extension</td>
+        <td>Ratio</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>832 ns</td>
+        <td>51 ns</td>
+        <td>16</td>
+    </tr>
+    <tr>
+        <td>100</td>
+        <td>9.0 μs</td>
+        <td>353 ns</td>
+        <td>25</td>
+    </tr>
+    <tr>
+        <td>1000</td>
+        <td>116.3 μs</td>
+        <td>4.2 μs</td>
+        <td>28</td>
+    </tr>
+    <tr>
+        <td>100000</td>
+        <td>16.6 ms</td>
+        <td>498 μs</td>
+        <td>33</td>
+    </tr>
+    <tr>
+        <td>1000000</td>
+        <td>240 ms</td>
+        <td>5.4 ms</td>
+        <td>44</td>
+    </tr>
+</table>
+
+
+--
+
+# C API: Downsides
+
+- Manual memory management
+- Manual reference counting (`Py_INCREF`, `Py_DECREF`)
+- No memory safety
+
+```C
+    for (size_t i = 0; i < n; ++i) {   // Sieve's length is n - 1!
+        if (!sieve[i]) { continue; }
+        if ((obj = PyLong_FromLong(sieve[i])) == NULL || // int -> Py int
+                   PyList_SetItem(rv, j++, obj)) {       // rv[i] = obj
+            Py_DECREF(rv);  rv = NULL;                   // On error, remove list
+            goto cleanup;
+        }
+    }
+```
+<!-- .element class="fragment" -->
+
+Notes:
+
+Oops, that `i < n` should actually be `i < n - 1`!
+
+
