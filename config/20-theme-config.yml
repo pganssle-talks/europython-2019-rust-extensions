@@ -15,4 +15,4 @@ reveal_options:
 extra_css:
   css/custom.css
 
-highlight_style_sheet: "css/xt256-pg.css"
+highlight_style_sheet: "css/xcode-pg.css"
