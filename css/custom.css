@@ -480,3 +480,14 @@ img.sbitem {
 }
 
 
+/****************************
+ *  HACK
+ *
+ *  The C code in this is too long and should be smaller font than the
+ *  rest of the code.
+ */
+
+code.lang-C {
+    font-size: 0.8em;
+    line-height: normal;
+}
