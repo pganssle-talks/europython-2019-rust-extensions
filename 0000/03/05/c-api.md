@@ -83,6 +83,8 @@ cleanup:
 }
 ```
 
+</span>
+
 Notes:
 
 Here's the same program, written with the C API, obviously it's a lot more complicated,
@@ -161,7 +163,7 @@ Out[5]: 35.361216730038024
 - Manual reference counting (`Py_INCREF`, `Py_DECREF`)
 - No memory safety
 
-```C
+```C++
     for (size_t i = 0; i < n; ++i) {   // Sieve's length is n - 1!
         if (!sieve[i]) { continue; }
         if ((obj = PyLong_FromLong(sieve[i])) == NULL || // int -> Py int

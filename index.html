@@ -56,6 +56,9 @@ Paul Ganssle
 <img src="images/pganssle-logos.svg" height="40px" alt="@pganssle">
 <br/>
 <br/>
+<span style="font-size: 1em;"><em>This talk on Github:
+<a href="https://github.com/pganssle-talks/europython-2019-rust-extensions">pganssle-talks/europython-2019-rust-extensions</a>
+</span>
 <!--
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
     <img src="external-images/logos/cc-by.svg" height="45px">
@@ -178,6 +181,8 @@ cleanup:
 }
 ```
 
+</span>
+
 Notes:
 
 Here's the same program, written with the C API, obviously it's a lot more complicated,
@@ -256,7 +261,7 @@ Out[5]: 35.361216730038024
 - Manual reference counting (`Py_INCREF`, `Py_DECREF`)
 - No memory safety
 
-```C
+```C++
     for (size_t i = 0; i < n; ++i) {   // Sieve's length is n - 1!
         if (!sieve[i]) { continue; }
         if ((obj = PyLong_FromLong(sieve[i])) == NULL || // int -> Py int
@@ -639,7 +644,7 @@ fn classy(_py: Python, m: &PyModule) -> PyResult<()> {
 				
 				<section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$" data-notes="^Note:">
 					<script type="text/template">
-# FFI Bindings
+# C FFI Bindings
 
 ```rust
 use std::mem;
@@ -687,7 +692,7 @@ pub unsafe extern "c" fn deallocate_vec(ptr: *mut u32, len: size_t) {
 
 --
 
-# FFI Bindings with Milksnake
+# C FFI Bindings with Milksnake
 
 ```python
 from msmodule._native import ffi, lib

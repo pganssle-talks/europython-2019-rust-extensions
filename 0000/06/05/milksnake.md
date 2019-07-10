@@ -1,4 +1,4 @@
-# FFI Bindings
+# C FFI Bindings
 
 ```rust
 use std::mem;
@@ -46,7 +46,7 @@ pub unsafe extern "c" fn deallocate_vec(ptr: *mut u32, len: size_t) {
 
 --
 
-# FFI Bindings with Milksnake
+# C FFI Bindings with Milksnake
 
 ```python
 from msmodule._native import ffi, lib
